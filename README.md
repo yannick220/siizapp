@@ -24,9 +24,10 @@ SIIZ est une messagerie qui compare les distances sans afficher la position exac
 3. Dans GitHub : `Settings` puis `Pages`.
 4. Source : `Deploy from a branch`.
 5. Branch : `main`, folder : `/root`.
-6. Ouvrir `https://yannick220.github.io/siizapp/`.
+6. Ouvrir `https://yannick220.github.io/siizapp/?v=2`.
 
 Ce nouveau nom de dépôt donne une nouvelle adresse, séparée de l’ancienne PWA `siiz`. Android ne doit donc plus la confondre avec l’application déjà installée.
+Cette archive force aussi le nom installable `SIIZAPP`, un identifiant PWA propre à `/siizapp/` et un manifest versionné.
 
 Sur Android, Chrome proposera l'installation. Sur iPhone, ouvrir dans Safari puis `Partager` et `Sur l'écran d'accueil`.
 
