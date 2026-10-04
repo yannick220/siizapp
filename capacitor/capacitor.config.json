@@ -1,0 +1,8 @@
+{
+  "appId": "app.siiz.mobile",
+  "appName": "SIIZ",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  }
+}
