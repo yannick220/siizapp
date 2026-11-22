@@ -15,7 +15,7 @@
   <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDU4LjQxMyA4NzYuMDM5IiByb2xlPSJpbWciIGFyaWEtbGFiZWw9IlNJSVoiPgogIDxwYXRoIGQ9Ik0zNjguNTkzLDg5Mi4xNTRsLTMyLjk1NiwzMi45NTNIMTk2LjdMNzExLjY4Niw0MTAuMTE2YTIwMS4wMzIsMjAxLjAzMiwwLDAsMSwxMDMuMTI2LTU1LjEzMiwxMDQuNzQ1LDEwNC43NDUsMCwwLDAtMTIzLjQ1NSwxNy43MDhMMTM4Ljk0Miw5MjUuMTA2SDBMMTgxLjc4Nyw3NDMuMzIsMjUyLjUsNjcyLjYwNmgwTDYyMS44ODUsMzAzLjIyNEEyMDEuNzM3LDIwMS43MzcsMCwwLDEsNzY0Ljk0LDI0NC4xNTFxMy4wMDcsMCw2LC4wODhhMzM4LjEsMzM4LjEsMCwwLDAtMjI3LjE5My05NS4zMiwzMi40MDYsMzIuNDA2LDAsMCwxLTUuODcyLjUwOUEzMzYuOTU2LDMzNi45NTYsMCwwLDAsMjU0LjUsNjY4LjYwNmwtNzAuNzEyLDcwLjcxM0E0MzUuNDM2LDQzNS40MzYsMCwwLDEsMzgzLjgyMSw3OS4yNDZsLS41NDctLjk0N2E0MzUuNTMxLDQzNS41MzEsMCwwLDEsNTc0LjcsMzAwLjg4OSwyMDEuNzUxLDIwMS43NTEsMCwwLDEsOTguMTgxLDE1Ny4wMjRsLjUsNi4wMTJoLTg4LjdjLTI3LjE0MSwyMjguMzA2LTIyMi4zMTgsMzgzLjM1Ni00MzMuMTIsMzgzLjM2M0E0MzAuOTkxLDQzMC45OTEsMCwwLDEsMzY4LjU5Myw4OTIuMTU0Wm00MTIuNTY1LTQxMi41N0w0NTkuNjUsODAxLjA5NGwtMTMuOTQzLDEzLjk0YzE3OS43NzcsNDkuOCwzNjUuMzE0LTU2LjUzMSw0MTQuNjA1LTIzMy40NzVBMzAuMjI5LDMwLjIyOSwwLDAsMSw4NjEuNDIsNTczYTMzOC4yNTEsMzM4LjI1MSwwLDAsMCwxMS4yMDYtNzIuMzA1cS4xNTgtNS4xNjkuMTU4LTEwLjM2MWEzNDAuNCwzNDAuNCwwLDAsMC0yLjMzNy0zOS44NjEsMTA1LjA4MSwxMDUuMDgxLDAsMCwwLTE1LjcwNi0xLjE4QTEwMy43MjIsMTAzLjcyMiwwLDAsMCw3ODEuMTU4LDQ3OS41ODRaTTE4My43ODUsNzM5LjMxOWgwWk0zODMuMjczLDc4LjNoMFoiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEuMjA3IC01MC4wNDcpIiBmaWxsPSIjMTExMTEzIi8+Cjwvc3ZnPgo=" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
 :root {
   --yellow: #ffad17;
@@ -1040,6 +1040,49 @@ html.store-demo .timer-scale input::-webkit-slider-thumb{background:#ffd335!impo
 html.store-demo .message-field{background:#292e25!important;color:#fffdf2!important}
 html.store-demo .message-field textarea{color:#fffdf2!important}
 html.store-demo .app-shell,html.store-demo .sidebar,html.store-demo .chat-panel{font-family:'Montserrat Alternates',Arial,sans-serif!important}
+
+/* SIIZ in GO! TOUR — high-contrast, legible, no legacy light surfaces. */
+html.store-demo{--ink:#f5f3e9;--muted:#d3d3c8;--yellow:#ffd335;--yellow-soft:transparent;--line:#52584a}
+html.store-demo body,html.store-demo .app-shell,html.store-demo button,html.store-demo input,html.store-demo textarea{
+ font-family:Inter,Arial,Helvetica,sans-serif!important;letter-spacing:normal!important
+}
+html.store-demo .sidebar,html.store-demo .sidebar-header,html.store-demo .chat-header,html.store-demo .chat-panel{background:#171914!important;color:#f5f3e9!important}
+html.store-demo .chat-proximity-control{background:#171914!important;color:#f5f3e9!important}
+html.store-demo .conversation{color:#f5f3e9!important;background:transparent!important;border-radius:14px!important}
+html.store-demo .conversation:hover{background:#30352a!important}
+html.store-demo .conversation.active{background:transparent!important;box-shadow:inset 3px 0 #ffd335!important}
+html.store-demo .conversation-title-row strong{color:#fffdf2!important}
+html.store-demo .conversation-preview,html.store-demo .conversation-preview span{color:#d4d5ca!important}
+html.store-demo .conversation-time{color:#c7c9bb!important}
+html.store-demo .conversation.active .conversation-time{color:#ffd335!important}
+html.store-demo .distance-dots i{background:#838c78!important}
+html.store-demo .bubble{background:#30372d!important;color:#fffdf2!important;box-shadow:none!important}
+html.store-demo .out .bubble{background:#fff3c6!important;color:#171914!important}
+html.store-demo .bubble-meta{color:#cbd0bf!important}
+html.store-demo .out .bubble-meta{color:#4b4d40!important}
+html.store-demo .message-field{background:#30372d!important}
+html.store-demo .message-field textarea{color:#fffdf2!important}
+html.store-demo .message-field textarea::placeholder,html.store-demo .search-box input::placeholder{color:#b9bfaf!important;opacity:1!important}
+html.store-demo .search-box{background:#30372d!important}
+html.store-demo .search-box svg{color:#ffd335!important}
+html.store-demo .scale-labels{bottom:10px!important;font-size:12px!important;font-weight:700!important}
+html.store-demo .timer-scale{top:19px!important}
+html.store-demo .scale-drawer{height:48px!important}
+html.store-demo .home-proximity-control{height:51px!important}
+html.store-demo .chat-proximity-control{padding-bottom:2px!important}
+html.store-demo .scale-labels span:first-child{color:#f5f3e9!important}
+html.store-demo .scale-labels span:last-child{color:#ffd335!important}
+html.store-demo .brand{color:#ffd335!important;font-weight:800!important;letter-spacing:-.035em!important}
+html.store-demo .brand-mark{
+ width:29px!important;height:34px!important;background:#ffd335!important;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 44'%3E%3Cpath fill='black' d='M18 2C8.1 2 1 9.1 1 19c0 11 17 23 17 23l17-23C35 9.1 27.9 2 18 2zm0 8a9 9 0 1 1 0 18 9 9 0 0 1 0-18z'/%3E%3Cpath fill='black' d='M14 30 31 17 31 27 14 40Z'/%3E%3C/svg%3E") center/contain no-repeat!important;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 44'%3E%3Cpath fill='black' d='M18 2C8.1 2 1 9.1 1 19c0 11 17 23 17 23l17-23C35 9.1 27.9 2 18 2zm0 8a9 9 0 1 1 0 18 9 9 0 0 1 0-18z'/%3E%3Cpath fill='black' d='M14 30 31 17 31 27 14 40Z'/%3E%3C/svg%3E") center/contain no-repeat!important
+}
+html.store-demo .brand-mark::after{display:none!important}
+html.store-demo .avatar{color:#ffd335!important}
+html.store-demo .chat-header .contact-summary,html.store-demo .chat-header .contact-summary *{color:#f5f3e9!important}
+html.store-demo .chat-header .contact-summary .avatar{color:#ffd335!important}
+html.store-demo .message-field button,html.store-demo .floating-new-chat{color:#171914!important}
 </style>
 <script>if(new URLSearchParams(location.search).get("demo")==="1")document.documentElement.classList.add("store-demo");</script></head>
 <body>
