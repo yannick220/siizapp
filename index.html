@@ -1003,6 +1003,7 @@ button, [role="button"] { -webkit-tap-highlight-color: transparent; }
 .chat-proximity-control { padding-bottom: 8px; }
 /* The Dynamic Island of the enclosing demo phone must not obscure app headers. */
 html[data-siiz-mode="demo"] .app-shell { padding-top: 39px; }
+html[data-siiz-mode="demo"] .chat-panel { top: 39px; bottom: 0; height: auto; }
 html[data-siiz-mode="demo"] .sidebar-header,
 html[data-siiz-mode="demo"] .chat-header { flex-shrink: 0; }
 @media (max-width: 820px), (max-height: 600px) and (hover: none) and (pointer: coarse) {
@@ -1012,6 +1013,7 @@ html[data-siiz-mode="demo"] .chat-header { flex-shrink: 0; }
   .chat-proximity-control .scale-drawer { height: 60px; }
   .inbox-head { padding-top: 6px; padding-bottom: 10px; }
   html[data-siiz-mode="demo"] .app-shell { padding-top: 41px; }
+  html[data-siiz-mode="demo"] .chat-panel { top: 41px; bottom: 0; height: auto; }
   html[data-siiz-mode="demo"] .sidebar,
   html[data-siiz-mode="demo"] .chat-panel { height: 100%; }
 }
