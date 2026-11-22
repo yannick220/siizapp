@@ -1210,6 +1210,42 @@ html[data-siiz-mode="demo"] body.siiz-keyboard-search .conversation-list{
 }
 html[data-siiz-mode="demo"] .scale-labels{bottom:0!important;transform:translateY(9px)!important}
 html[data-siiz-mode="demo"] .conversation-list{transform:translateY(-4px)}
+
+/* 2026 keyboard motion system: spring-like dock and contemporary flat keys. */
+html[data-siiz-mode="demo"]{--siiz-kb-height:248px;--siiz-kb-gap:5px}
+html[data-siiz-mode="demo"] .siiz-demo-keyboard:not([hidden]){
+ height:var(--siiz-kb-height)!important;padding:9px 7px 12px!important;
+ background:#e9ece8!important;border-top:1px solid #d6dcd5!important;
+ border-radius:20px 20px 0 0!important;box-shadow:0 -12px 30px #142b3015!important;
+ transform:translate3d(0,105%,0);opacity:1;
+ transition:transform .36s cubic-bezier(.2,.8,.18,1)!important;
+ will-change:transform
+}
+html[data-siiz-mode="demo"] body.siiz-keyboard-open .siiz-demo-keyboard:not([hidden]){
+ transform:translate3d(0,0,0)!important
+}
+html[data-siiz-mode="demo"] .siiz-keyboard-toolbar{height:26px!important;flex:none!important;padding:0 9px 7px!important;font-size:10px!important}
+html[data-siiz-mode="demo"] .siiz-keyboard-keys{gap:5px!important}
+html[data-siiz-mode="demo"] .siiz-key-row{gap:4px!important}
+html[data-siiz-mode="demo"] .siiz-key{
+ background:#fff!important;color:#1c2b2c!important;border:0!important;border-radius:8px!important;
+ box-shadow:0 1px 0 #c9d0c8!important;font-family:Inter,Arial,sans-serif!important;
+ font-weight:550!important;font-size:16px!important;transition:background .1s,transform .1s!important
+}
+html[data-siiz-mode="demo"] .siiz-key-wide{background:#d2d9d1!important;font-size:12px!important}
+html[data-siiz-mode="demo"] .siiz-key-search{background:#ffd335!important;font-size:11px!important}
+html[data-siiz-mode="demo"] .siiz-key.siiz-key-pressed{background:#ffd335!important;transform:scale(.94)!important}
+html[data-siiz-mode="demo"] .siiz-keyboard-toolbar button{color:#1b3032!important}
+html[data-siiz-mode="demo"] .composer{
+ transition:bottom .36s cubic-bezier(.2,.8,.18,1)!important
+}
+html[data-siiz-mode="demo"] body.siiz-keyboard-message .composer{
+ bottom:calc(var(--siiz-kb-height) + var(--siiz-kb-gap))!important
+}
+html[data-siiz-mode="demo"] body.siiz-keyboard-search .search-box,
+html[data-siiz-mode="demo"] body.siiz-keyboard-search .floating-new-chat{
+ bottom:calc(var(--siiz-kb-height) + var(--siiz-kb-gap))!important
+}
 </style>
 </head>
 <body>
@@ -2619,15 +2655,31 @@ if(new URLSearchParams(location.search).get("demo")==="1"){
   btn.addEventListener("click",()=>{activateKey(letter);insertKey(letter)});
   keyButtons.push(btn);div.appendChild(btn);
  });keys.appendChild(div)});
+ let keyboardHideTimer=null;
  function openKeyboard(field){
-  active=field;kb.hidden=false;document.body.classList.add("siiz-keyboard-open");
+  clearTimeout(keyboardHideTimer);
+  const target=field===search?document.querySelector(".search-box"):document.getElementById("composer");
+  const before=target.getBoundingClientRect();
+  active=field;kb.hidden=false;
   document.body.classList.toggle("siiz-keyboard-message",field===message);
   document.body.classList.toggle("siiz-keyboard-search",field===search);
+  const after=target.getBoundingClientRect();
+  const delta=before.top-after.top;
+  if(Math.abs(delta)>2){
+   target.animate([{transform:"translateY("+delta+"px)"},{transform:"translateY(0)"}],
+     {duration:360,easing:"cubic-bezier(.2,.8,.18,1)"});
+  }
+  requestAnimationFrame(()=>document.body.classList.add("siiz-keyboard-open"));
   window.scrollTo(0,0);
  }
  function closeKeyboard(){
-  kb.hidden=true;document.body.classList.remove("siiz-keyboard-open","siiz-keyboard-message","siiz-keyboard-search");
   const field=active;active=null;field?.blur();
+  document.body.classList.remove("siiz-keyboard-open");
+  keyboardHideTimer=setTimeout(()=>{
+   if(active)return;
+   kb.hidden=true;
+   document.body.classList.remove("siiz-keyboard-message","siiz-keyboard-search");
+  },360);
  }
  [search,message].forEach(field=>{
   field.addEventListener("focus",()=>openKeyboard(field));
