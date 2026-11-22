@@ -1130,6 +1130,20 @@ html[data-siiz-mode="demo"] .brand>span:last-child{
 html[data-siiz-mode="demo"] .brand{display:inline-flex!important;align-items:center!important;gap:9px!important;text-decoration:none!important}
 html[data-siiz-mode="demo"] .siiz-brand-symbol{width:27px;height:27px;object-fit:contain;display:block}
 html[data-siiz-mode="demo"] .siiz-brand-word{font-family:Montserrat,Arial,sans-serif!important;font-weight:800!important;font-size:23px!important;letter-spacing:-.9px!important;text-transform:none!important;color:#142d32!important}
+
+/* SIIZ wordmark: non-italic Montserrat. Group conversations: WhatsApp-like consecutive bubbles. */
+html[data-siiz-mode="demo"] .siiz-brand-word,
+.siiz-brand-word{font-style:normal!important;font-synthesis:weight!important;transform:none!important}
+html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
+.messages .siiz-group-message{display:flex;align-items:flex-end;gap:7px;max-width:88%}
+.messages .siiz-group-message .bubble{min-width:0;max-width:100%;border-radius:15px 15px 15px 5px}
+.messages .siiz-group-message:not(.siiz-group-first){margin-top:-5px}
+.messages .siiz-group-message:not(.siiz-group-first) .bubble{border-top-left-radius:5px}
+.messages .siiz-group-message:not(.siiz-group-last) .bubble{border-bottom-left-radius:5px}
+.messages .siiz-thread-avatar{width:29px;height:29px;flex:0 0 29px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#ffd335;color:#172a2d;font-size:12px;font-weight:800}
+.messages .siiz-thread-avatar img{width:100%;height:100%;object-fit:cover}
+.messages .siiz-thread-avatar-placeholder{visibility:hidden}
+.messages .siiz-group-message .message-author{background:transparent;padding:0;margin:0 0 5px;border-radius:0;font-size:12px;font-weight:800;color:#cc5a88}
 </style>
 </head>
 <body>
@@ -1642,7 +1656,7 @@ function renderActiveConversation() {
   chatName.textContent = active.name;
   chatStatus.textContent = active.offScale ? "hors GPS" : (proximityEnabled ? active.proximity : "proximité en pause");
   setAvatarElement(chatAvatar, active);
-  messagesEl.innerHTML = `<div class="date-chip">AUJOURD'HUI</div>` + active.messages.map(message => {
+  messagesEl.innerHTML = `<div class="date-chip">AUJOURD'HUI</div>` + active.messages.map((message, messageIndex) => {
     const messageDistance = active.isGroup ? message.distanceKm : active.distanceKm;
     const resolvedDistance = Number.isFinite(messageDistance) ? messageDistance : active.distanceKm;
     const messageSize = active.offScale
@@ -1653,10 +1667,20 @@ function renderActiveConversation() {
     const content = message.type === "audio"
       ? voiceMessageMarkup(message, resolvedDistance, message.side === "out")
       : escapeHtml(message.text);
+    const previous = active.messages[messageIndex - 1];
+    const next = active.messages[messageIndex + 1];
+    const isIncomingGroup = active.isGroup && message.side === "in" && Boolean(message.sender);
+    const sameSender = (other) => other && other.side === "in" && other.sender === message.sender;
+    const isFirst = isIncomingGroup && !sameSender(previous);
+    const isLast = isIncomingGroup && !sameSender(next);
+    const contact = isIncomingGroup ? conversations.find(item => item.name === message.sender && item.avatar) : null;
+    const senderInitial = (message.sender || "?").trim().slice(0,1).toUpperCase();
+    const avatar = isLast ? `<span class="siiz-thread-avatar">${contact ? `<img src="${escapeHtml(contact.avatar)}" alt="" />` : escapeHtml(senderInitial)}</span>` : '<span class="siiz-thread-avatar siiz-thread-avatar-placeholder"></span>';
     return `
-    <div class="message-row ${message.side}">
+    <div class="message-row ${message.side}${isIncomingGroup ? " siiz-group-message" : ""}${isFirst ? " siiz-group-first" : ""}${isLast ? " siiz-group-last" : ""}">
+      ${isIncomingGroup ? avatar : ""}
       <div class="bubble" style="--message-size:${messageSize.toFixed(2)}px">
-        ${active.isGroup && message.sender ? `<span class="message-author">${escapeHtml(message.sender)}</span>` : ""}
+        ${isFirst ? `<span class="message-author">${escapeHtml(message.sender)}</span>` : ""}
         ${content}
         <span class="bubble-meta">${message.time}${message.side === "out" ? '<span class="checks">✓✓</span>' : ""}</span>
       </div>
