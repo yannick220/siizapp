@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f8f9fa"><title>GO ! STORE — Catalogue d’applications</title>
+<meta name="theme-color" content="#f8f9fa"><title>GO! STORE — Catalogue d’applications</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -12,7 +12,7 @@
 @media(max-width:850px){.shell{display:block}.library{min-height:auto;padding:22px 20px 14px;border:0;border-bottom:1px solid var(--line)}.intro{margin:28px 0 15px}.intro h1{font-size:27px}.intro p{max-width:unset}.catalogue{display:flex;overflow-x:auto;gap:8px;padding-bottom:10px;scroll-snap-type:x proximity}.app-card{width:200px;flex:none;border:1px solid var(--line);scroll-snap-align:start}.app-card .chevron{display:none}.library-foot{display:none}.stage{min-height:700px;padding:34px 20px 70px}.stage-top{top:15px;right:20px}.stage-footer{left:20px;bottom:16px}.search{margin-bottom:16px}.device-wrap{width:min(325px,calc((100dvh - 190px)*.465),calc(100vw - 70px));min-width:240px}}
 @media(max-height:650px) and (min-width:851px){.stage{padding-top:15px}.device-wrap{width:min(270px,calc((100dvh - 95px)*.465))}.app-detail{margin-top:12px}}
 
-/* Embedded phone-only experience for GO ! TOUR slides. */
+/* Embedded phone-only experience for GO! TOUR slides. */
 html.embedded,html.embedded body{width:100%;height:100%;overflow:hidden;background:transparent}
 html.embedded .shell{display:block;height:100%;min-height:0}
 html.embedded .library,html.embedded .stage-top,html.embedded .stage-footer,html.embedded .app-detail{display:none}
@@ -23,10 +23,10 @@ html.embedded .device{box-shadow:0 10px 30px #0003}
 </style>
 </head>
 <body>
-<div class="shell"><aside class="library"><div class="mast"><strong>GO ! <i>STORE</i></strong><span>Collection 01 / Tourisme</span></div>
+<div class="shell"><aside class="library"><div class="mast"><strong>GO! <i>STORE</i></strong><span>Collection 01 / Tourisme</span></div>
 <header class="intro"><div class="eyebrow">Le laboratoire d'applications</div><h1>À découvrir.<br>À expérimenter.</h1><p>Des idées d'applications touristiques à explorer directement, dans un téléphone.</p></header>
 <label class="search"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><input id="search" type="search" placeholder="Rechercher une application…" aria-label="Rechercher une application"></label>
-<nav id="catalogue" class="catalogue" aria-label="Applications disponibles"></nav><div class="library-foot">GO ! STORE · Une sélection de concepts à manipuler.<br>Les maquettes signalées ne sont pas des applications publiées.</div></aside>
+<nav id="catalogue" class="catalogue" aria-label="Applications disponibles"></nav><div class="library-foot">GO! STORE · Une sélection de concepts à manipuler.<br>Les maquettes signalées ne sont pas des applications publiées.</div></aside>
 <main class="stage"><div class="stage-top" id="current">01 / 07</div><div class="device-wrap"><div class="device"><div class="display"><div class="preview" id="preview"></div></div></div></div><div class="app-detail"><strong id="selectedTitle">SIIZ</strong><p id="selectedDesc">Le contact, à bonne distance.</p><span class="state" id="selectedState">Application interactive</span></div><div class="stage-footer">Démonstrations <span id="footerName">SIIZ</span></div></main></div>
 <script>
 const apps=[
