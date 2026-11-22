@@ -82,7 +82,7 @@
         color: #9f1d1d;
       }
       #siizAuthMessage.is-success {
-        background: rgba(255,212,0,.18);
+        background: rgba(255,173,23,.18);
         color: var(--ink);
       }
       .siiz-auth-card input {
@@ -95,7 +95,7 @@
         outline: none;
       }
       .siiz-auth-card input:focus {
-        box-shadow: inset 0 0 0 2px rgba(255,212,0,.8);
+        box-shadow: inset 0 0 0 2px rgba(255,173,23,.8);
         background: #fff;
       }
       .siiz-password-field {
