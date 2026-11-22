@@ -1,8 +1,8 @@
-const CACHE_NAME = "siizapp-pwa-v2";
+const CACHE_NAME = "siizapp-pwa-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./siiz-supabase-live.js?v=2",
+  "./siiz-supabase-live.js?v=3",
   "./manifest.webmanifest?v=2",
   "./offline.html",
   "./icons/icon-192.png",
