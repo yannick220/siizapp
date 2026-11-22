@@ -1110,6 +1110,43 @@ html[data-siiz-mode="demo"] .floating-new-chat{
  left:auto!important;right:14px!important;bottom:16px!important;
  width:50px!important;height:50px!important;z-index:9!important
 }
+
+/* SIIZ presentation: real interactive on-screen keyboard in the simulated phone. */
+html[data-siiz-mode="demo"] .conversation.active::before,
+html[data-siiz-mode="demo"] .conversation.active::after{display:none!important}
+html[data-siiz-mode="demo"] .conversation.active{background:transparent!important;box-shadow:none!important}
+html[data-siiz-mode="demo"] .scale-labels{bottom:2px!important}
+html[data-siiz-mode="demo"] .scale-drawer{height:67px!important}
+html[data-siiz-mode="demo"] .home-proximity-control,
+html[data-siiz-mode="demo"] .chat-proximity-control{min-height:67px!important}
+html[data-siiz-mode="demo"] .brand>span:last-child{
+ font-family:'Montserrat Alternates',Arial,sans-serif!important;font-size:29px!important;
+ font-weight:800!important;letter-spacing:-.08em!important;transform:none!important;
+ text-shadow:none!important;font-style:italic!important
+}
+.siiz-demo-keyboard{display:none}
+html[data-siiz-mode="demo"] .siiz-demo-keyboard:not([hidden]){
+ position:fixed;z-index:18;bottom:0;left:0;right:0;height:272px;
+ display:flex;flex-direction:column;background:#e6e8e4;border-top:1px solid #cbd0c9;
+ padding:8px 5px 12px;box-shadow:0 -10px 24px #102e351b;overscroll-behavior:contain
+}
+html[data-siiz-mode="demo"] .siiz-keyboard-toolbar{height:32px;display:flex;justify-content:space-between;align-items:center;padding:0 10px 7px;color:#52605d;font-size:11px;font-weight:650}
+html[data-siiz-mode="demo"] .siiz-keyboard-toolbar button{background:none;border:0;color:#102e35;font-weight:800;font-size:12px}
+html[data-siiz-mode="demo"] .siiz-keyboard-keys{display:flex;flex-direction:column;gap:7px;flex:1}
+html[data-siiz-mode="demo"] .siiz-key-row{display:flex;justify-content:center;gap:4px;flex:1}
+html[data-siiz-mode="demo"] .siiz-key{
+ flex:1;min-width:0;display:grid;place-items:center;background:#fff;color:#142c32;
+ border:1px solid #d4d9d1;border-bottom:2px solid #bdc3bb;border-radius:6px;
+ font-family:Arial,sans-serif;font-size:17px;font-weight:500;cursor:pointer;padding:0
+}
+html[data-siiz-mode="demo"] .siiz-key:active{background:#ffd335}
+html[data-siiz-mode="demo"] .siiz-key-wide{flex:1.55;background:#cbd2ca;font-size:12px;font-weight:750}
+html[data-siiz-mode="demo"] .siiz-key-space{flex:5;font-size:12px}
+html[data-siiz-mode="demo"] .siiz-key-search{flex:1.7;background:#ffd335;font-size:12px;font-weight:800}
+html[data-siiz-mode="demo"] body.siiz-keyboard-open .conversation-list{padding-bottom:290px!important}
+html[data-siiz-mode="demo"] body.siiz-keyboard-open .floating-new-chat{display:none!important}
+html[data-siiz-mode="demo"] body.siiz-keyboard-open .sidebar{padding-bottom:272px!important}
+html[data-siiz-mode="demo"] body.siiz-keyboard-open .app-shell{overflow:hidden!important}
 </style>
 </head>
 <body>
@@ -1201,6 +1238,10 @@ html[data-siiz-mode="demo"] .floating-new-chat{
     </button>
   </main>
 
+  <div class="siiz-demo-keyboard" id="siizDemoKeyboard" aria-label="Clavier de recherche" hidden>
+  <div class="siiz-keyboard-toolbar"><span>Rechercher une conversation</span><button type="button" id="siizKeyboardDone">Terminé</button></div>
+  <div class="siiz-keyboard-keys" id="siizKeyboardKeys"></div>
+</div>
   <div class="dialog-backdrop" id="dialogBackdrop" hidden>
     <section class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"></section>
   </div>
@@ -2481,6 +2522,40 @@ renderActiveConversation();
 renderProfileButton();
 setProximityEnabled(proximityEnabled);
 resizeInput();
+
+
+/* In-phone keyboard for the public demo; physical keyboard also edits the same search field. */
+if(new URLSearchParams(location.search).get("demo")==="1"){
+ const kb=document.getElementById("siizDemoKeyboard");
+ const keys=document.getElementById("siizKeyboardKeys");
+ const field=document.getElementById("searchInput");
+ const rows=[["A","Z","E","R","T","Y","U","I","O","P"],["Q","S","D","F","G","H","J","K","L","M"],["⇧","W","X","C","V","B","N","⌫"],["123",",","espace",".","Rechercher"]];
+ rows.forEach(row=>{
+  const div=document.createElement("div");div.className="siiz-key-row";
+  row.forEach(letter=>{
+   const btn=document.createElement("button");btn.type="button";btn.className="siiz-key";
+   if(["⇧","⌫","123"].includes(letter))btn.classList.add("siiz-key-wide");
+   if(letter==="espace")btn.classList.add("siiz-key-space");
+   if(letter==="Rechercher")btn.classList.add("siiz-key-search");
+   btn.textContent=letter;btn.addEventListener("pointerdown",e=>e.preventDefault());
+   btn.addEventListener("click",()=>{
+    if(letter==="Rechercher"){closeKeyboard();return}
+    if(letter==="⌫")field.value=field.value.slice(0,-1);
+    else if(letter==="espace")field.value+=" ";
+    else if(letter==="⇧"||letter==="123")return;
+    else field.value+=letter.toLowerCase();
+    field.dispatchEvent(new Event("input",{bubbles:true}));
+    field.focus({preventScroll:true});
+   });div.appendChild(btn);
+  });keys.appendChild(div);
+ });
+ function openKeyboard(){kb.hidden=false;document.body.classList.add("siiz-keyboard-open");window.scrollTo(0,0)}
+ function closeKeyboard(){kb.hidden=true;document.body.classList.remove("siiz-keyboard-open");field.blur()}
+ field.addEventListener("focus",openKeyboard);
+ document.getElementById("siizKeyboardDone").addEventListener("click",closeKeyboard);
+ field.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key==="Escape"){e.preventDefault();closeKeyboard()}});
+ document.addEventListener("pointerdown",e=>{if(!kb.hidden&&!kb.contains(e.target)&&!e.target.closest(".search-box"))closeKeyboard()});
+}
 
   </script>
   <script>
