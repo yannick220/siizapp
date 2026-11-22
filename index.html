@@ -2347,8 +2347,24 @@ setProximityEnabled(proximityEnabled);
 resizeInput();
 
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./siiz-supabase-live.js?v=2"></script>
+  <script>
+    // Public presentation mode: runs only local sample data and never initializes Supabase.
+    // The normal URL retains authentication and the real backend.
+    if (new URLSearchParams(location.search).get("demo") === "1") {
+      document.documentElement.dataset.siizMode = "demo";
+      document.title = "SIIZ — Démonstration";
+    } else {
+      const supabaseScript = document.createElement("script");
+      supabaseScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+      supabaseScript.onload = () => {
+        const liveScript = document.createElement("script");
+        liveScript.src = "./siiz-supabase-live.js?v=3";
+        document.body.append(liveScript);
+      };
+      supabaseScript.onerror = () => console.error("Le service de connexion SIIZ est indisponible.");
+      document.body.append(supabaseScript);
+    }
+  </script>
   <script>
     if ("serviceWorker" in navigator && location.protocol !== "file:") {
       window.addEventListener("load", () => {
