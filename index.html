@@ -1072,6 +1072,38 @@ html[data-siiz-mode="demo"] .brand>span:last-child{
  text-shadow:1px 0 #172d32!important;
 }
 html[data-siiz-mode="demo"] .brand>span:last-child::first-letter{color:#172d32!important}
+
+/* Embedded demo: modal stays inside the phone; opening it must never scroll the outer page. */
+html[data-siiz-mode="demo"],html[data-siiz-mode="demo"] body{
+ height:100%!important;max-height:100%!important;overflow:hidden!important;overscroll-behavior:none!important
+}
+html[data-siiz-mode="demo"] .dialog-backdrop{
+ position:fixed!important;inset:0!important;height:100dvh!important;max-height:100dvh!important;
+ padding:10px!important;overflow:hidden!important;overscroll-behavior:contain!important;
+}
+html[data-siiz-mode="demo"] .dialog{
+ max-height:calc(100dvh - 20px)!important;width:100%!important;
+ overflow-y:auto!important;overscroll-behavior:contain!important;
+ transform:none!important;transition:opacity .2s ease!important;
+}
+html[data-siiz-mode="demo"] .scale-labels{
+ bottom:6px!important;font-size:12px!important;line-height:1.1!important;
+}
+html[data-siiz-mode="demo"] .home-proximity-control .scale-drawer,
+html[data-siiz-mode="demo"] .chat-proximity-control .scale-drawer{height:62px!important}
+html[data-siiz-mode="demo"] .home-proximity-control,
+html[data-siiz-mode="demo"] .chat-proximity-control{min-height:62px!important}
+html[data-siiz-mode="demo"] .timer-scale{top:0!important;height:32px!important;transform:none!important}
+html[data-siiz-mode="demo"] .timer-scale input{top:5px!important}
+html[data-siiz-mode="demo"] .conversation.active{
+ background:transparent!important;box-shadow:inset 3px 0 #ffd335!important
+}
+html[data-siiz-mode="demo"] .conversation.active:hover{background:#f5f5f0!important}
+html[data-siiz-mode="demo"] .brand>span:last-child{
+ font-family:'Montserrat Alternates',Arial,sans-serif!important;
+ font-size:28px!important;font-weight:800!important;letter-spacing:-.095em!important;
+ transform:skewX(-5deg)!important;text-shadow:none!important;
+}
 </style>
 </head>
 <body>
@@ -1766,7 +1798,7 @@ function closeDialog() {
     dialogBackdrop.hidden = true;
     dialogBackdrop.classList.remove("is-closing");
     dialog.innerHTML = "";
-    dialogTrigger?.focus?.();
+    dialogTrigger?.focus?.({preventScroll:true});
     dialogTrigger = null;
   };
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -1791,7 +1823,7 @@ function openDialog(content, direction = "forward") {
     void dialog.offsetWidth;
     dialog.classList.add(direction === "back" ? "content-back" : "content-forward");
   }
-  dialog.querySelector("button")?.focus();
+  dialog.querySelector("button")?.focus({preventScroll:true});
 }
 
 function dialogHeader(title, backAction = "") {
