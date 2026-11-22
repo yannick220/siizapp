@@ -1018,8 +1018,30 @@ html[data-siiz-mode="demo"] .chat-header { flex-shrink: 0; }
   html[data-siiz-mode="demo"] .chat-panel { height: 100%; }
 }
 
-  </style>
-</head>
+  
+/* GO! TOUR SIIZ demo only: presentation black/yellow, Montserrat Alternates. */
+html.store-demo{--yellow:#ffd335;--yellow-dark:#d7ad1b;--yellow-soft:rgba(255,211,53,.13);--ink:#fffdf2;--muted:#aab09e;--line:#4a4e41;--surface:#171914;--canvas:#171914;--brand-teal:#ffd335;--brand-gold:#ffd335;color-scheme:dark}
+html.store-demo body{font-family:'Montserrat Alternates',Arial,sans-serif!important;background:#171914!important;color:#fffdf2!important}
+html.store-demo button,html.store-demo input,html.store-demo textarea{font-family:'Montserrat Alternates',Arial,sans-serif!important}
+html.store-demo .app-shell{background:#171914!important;border-color:#30362b!important;box-shadow:none!important}
+html.store-demo .sidebar{background:#171914!important;border-color:#42483a!important}
+html.store-demo .chat-panel{background:#1d211a!important}
+html.store-demo .sidebar-header,html.store-demo .chat-header{background:#171914!important;color:#fffdf2!important}
+html.store-demo .search-box{background:#292e25!important;color:#fffdf2!important}
+html.store-demo .search-box input{color:#fffdf2!important}
+html.store-demo .conversation{color:#fffdf2!important;border-color:#41483b!important}
+html.store-demo .conversation:hover{background:#343a2e!important}
+html.store-demo .conversation.active,html.store-demo .conversation.selected{background:#353820!important}
+html.store-demo .scale-labels{color:#ffd335!important}
+html.store-demo .scale-labels span:first-child{color:#fffdf2!important}
+html.store-demo .scale-labels span:last-child{color:#ffd335!important}
+html.store-demo .timer-scale input::-webkit-slider-runnable-track{background:linear-gradient(90deg,#ffd335 0 var(--proximity-progress),#4c5144 var(--proximity-progress) 100%)!important}
+html.store-demo .timer-scale input::-webkit-slider-thumb{background:#ffd335!important}
+html.store-demo .message-field{background:#292e25!important;color:#fffdf2!important}
+html.store-demo .message-field textarea{color:#fffdf2!important}
+html.store-demo .app-shell,html.store-demo .sidebar,html.store-demo .chat-panel{font-family:'Montserrat Alternates',Arial,sans-serif!important}
+</style>
+<script>if(new URLSearchParams(location.search).get("demo")==="1")document.documentElement.classList.add("store-demo");</script></head>
 <body>
   <main class="app-shell" aria-label="Application SIIZ">
     <aside class="sidebar" aria-label="Discussions">
@@ -1040,7 +1062,7 @@ html[data-siiz-mode="demo"] .chat-header { flex-shrink: 0; }
           <div class="scale-drawer" id="homeScaleDrawer">
             <div class="timer-scale">
               <input id="homeScaleRange" type="range" min="0" max="1000" value="685" step="1" aria-label="Régler les écarts de taille liés à la distance" />
-              <div class="scale-labels" aria-hidden="true"><span>Vacances</span><span>Domicile</span></div>
+              <div class="scale-labels" aria-hidden="true"><span>Domicile</span><span>Vacances</span></div>
             </div>
           </div>
         </section>
@@ -1078,7 +1100,7 @@ html[data-siiz-mode="demo"] .chat-header { flex-shrink: 0; }
         <div class="scale-drawer" id="chatScaleDrawer">
           <div class="timer-scale">
             <input id="chatScaleRange" type="range" min="0" max="1000" value="685" step="1" aria-label="Régler les écarts de taille liés à la distance" />
-              <div class="scale-labels" aria-hidden="true"><span>Vacances</span><span>Domicile</span></div>
+              <div class="scale-labels" aria-hidden="true"><span>Domicile</span><span>Vacances</span></div>
           </div>
         </div>
       </section>
