@@ -1018,7 +1018,23 @@ html[data-siiz-mode="demo"] .chat-header { flex-shrink: 0; }
   html[data-siiz-mode="demo"] .chat-panel { height: 100%; }
 }
 
-  </style>
+  
+/* Presentation demo: preserve the original SIIZ light interface, regardless of host theme. */
+html[data-siiz-mode="demo"]{color-scheme:light!important;--surface:#fff!important;--canvas:#fff!important;--ink:#102e35!important;--muted:#5d6669!important;--line:rgba(17,17,19,.1)!important}
+html[data-siiz-mode="demo"] body{background:#fff!important;color:#102e35!important}
+html[data-siiz-mode="demo"] .app-shell,html[data-siiz-mode="demo"] .sidebar,html[data-siiz-mode="demo"] .sidebar-header{background:#fff!important;color:#102e35!important}
+html[data-siiz-mode="demo"] .chat-panel{background:#fafaf8!important;color:#102e35!important}
+html[data-siiz-mode="demo"] .chat-header,html[data-siiz-mode="demo"] .chat-proximity-control{background:#fff!important;color:#102e35!important}
+html[data-siiz-mode="demo"] .conversation{color:#102e35!important}
+html[data-siiz-mode="demo"] .conversation.active{background:#fff2ce!important}
+html[data-siiz-mode="demo"] .conversation-preview{color:#60676a!important}
+html[data-siiz-mode="demo"] .bubble{background:#fff!important;color:#102e35!important}
+html[data-siiz-mode="demo"] .out .bubble{background:#fff3d4!important;color:#102e35!important}
+html[data-siiz-mode="demo"] .bubble-meta{color:#6d7375!important}
+html[data-siiz-mode="demo"] .search-box,html[data-siiz-mode="demo"] .message-field{background:#f1f1ee!important;color:#102e35!important}
+html[data-siiz-mode="demo"] .search-box input,html[data-siiz-mode="demo"] .message-field textarea{color:#102e35!important}
+html[data-siiz-mode="demo"] .scale-labels{color:#102e35!important}
+</style>
 </head>
 <body>
   <main class="app-shell" aria-label="Application SIIZ">
