@@ -260,6 +260,7 @@
           </div>
           <button class="siiz-auth-primary" type="submit" data-auth-primary>Se connecter</button>
           <button class="siiz-auth-switch" type="button" data-auth-switch>Pas encore inscrit ? Créer un compte</button>
+          <button class="siiz-auth-switch" type="button" data-forgot-password>Mot de passe oublié ?</button>
           <p id="siizAuthMessage">${escapeHtml(message)}</p>
         </form>`;
       document.body.append(gate);
@@ -269,6 +270,10 @@
         if (switcher) {
           const form = gate.querySelector("#siizAuthForm");
           setAuthMode(form, form?.dataset.authFormMode === "signup" ? "signin" : "signup");
+          return;
+        }
+        if (event.target.closest("[data-forgot-password]")) {
+          requestPasswordReset(gate);
           return;
         }
         const toggle = event.target.closest("[data-password-toggle]");
@@ -315,7 +320,69 @@
     if (switcher) switcher.textContent = nextMode === "signup"
       ? "Déjà inscrit ? Se connecter"
       : "Pas encore inscrit ? Créer un compte";
+    const forgot = form.querySelector("[data-forgot-password]");
+    if (forgot) forgot.hidden = nextMode !== "signin";
     setAuthMessage(message);
+  }
+
+  async function requestPasswordReset(gate) {
+    const form = gate.querySelector("#siizAuthForm");
+    const email = form?.querySelector("input[name='email']")?.value.trim();
+    const message = form?.querySelector("#siizAuthMessage");
+    if (!email || !form.querySelector("input[name='email']").checkValidity()) {
+      setAuthMessage(message, "Indique d'abord ton adresse e-mail.", "error");
+      return;
+    }
+    setAuthMessage(message, "Envoi du lien de récupération...");
+    try {
+      const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+      if (error) throw error;
+      setAuthMessage(message, "Si ce compte existe, un lien de récupération vient d'être envoyé. Consulte ta boîte mail.", "success");
+    } catch (error) {
+      setAuthMessage(message, friendlyAuthError(error), "error");
+    }
+  }
+
+  function showNewPasswordForm() {
+    if (document.getElementById("siizRecoveryGate")) return;
+    const overlay = document.createElement("div");
+    overlay.id = "siizRecoveryGate";
+    overlay.className = "siiz-auth-gate";
+    overlay.innerHTML = `
+      <form class="siiz-auth-card" id="siizRecoveryForm">
+        <h2>Choisir un nouveau mot de passe</h2>
+        <p>Ce formulaire est accessible après avoir suivi le lien reçu par e-mail.</p>
+        <input name="newPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Nouveau mot de passe (8 caractères minimum)" required />
+        <input name="confirmPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Confirmer le mot de passe" required />
+        <button class="siiz-auth-primary" type="submit">Enregistrer le nouveau mot de passe</button>
+        <p id="siizRecoveryMessage" role="status"></p>
+      </form>`;
+    document.body.append(overlay);
+    overlay.querySelector("form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const message = form.querySelector("#siizRecoveryMessage");
+      const password = form.elements.newPassword.value;
+      if (password !== form.elements.confirmPassword.value) {
+        message.textContent = "Les deux mots de passe ne correspondent pas.";
+        return;
+      }
+      const button = form.querySelector("button[type='submit']");
+      button.disabled = true;
+      try {
+        const { error } = await client.auth.updateUser({password});
+        if (error) throw error;
+        overlay.remove();
+        const gate = document.getElementById("siizAuthGate");
+        if (gate) gate.hidden = true;
+      } catch (error) {
+        message.textContent = friendlyAuthError(error);
+      } finally {
+        button.disabled = false;
+      }
+    });
   }
 
   function hideAuthGate() {
@@ -962,7 +1029,11 @@
       showAuthGate();
     }
 
-    client.auth.onAuthStateChange((_event, session) => {
+    client.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        showNewPasswordForm();
+        return;
+      }
       if (session) {
         bootSession(session);
       } else {
