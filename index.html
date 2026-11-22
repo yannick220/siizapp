@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="SIIZ — la messagerie qui indique la proximité sans révéler votre position." />
   <meta name="theme-color" content="#006c77" />
+  <script>if(new URLSearchParams(location.search).get("demo")==="1"){document.documentElement.dataset.siizMode="demo";document.documentElement.style.background="#fff";document.documentElement.style.colorScheme="light";}</script>
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -2426,7 +2427,7 @@ resizeInput();
     }
   </script>
   <script>
-    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+    if ("serviceWorker" in navigator && location.protocol !== "file:" && new URLSearchParams(location.search).get("demo") !== "1") {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js").catch(() => {});
       });
