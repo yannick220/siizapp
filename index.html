@@ -1125,6 +1125,11 @@ html[data-siiz-mode="demo"] .brand>span:last-child{
  font-weight:800!important;letter-spacing:-.08em!important;transform:none!important;
  text-shadow:none!important;font-style:italic!important
 }
+
+/* Official SIIZ emblem and Montserrat lowercase wordmark. */
+html[data-siiz-mode="demo"] .brand{display:inline-flex!important;align-items:center!important;gap:9px!important;text-decoration:none!important}
+html[data-siiz-mode="demo"] .siiz-brand-symbol{width:27px;height:27px;object-fit:contain;display:block}
+html[data-siiz-mode="demo"] .siiz-brand-word{font-family:Montserrat,Arial,sans-serif!important;font-weight:800!important;font-size:23px!important;letter-spacing:-.9px!important;text-transform:none!important;color:#142d32!important}
 </style>
 </head>
 <body>
@@ -1132,8 +1137,8 @@ html[data-siiz-mode="demo"] .brand>span:last-child{
     <aside class="sidebar" aria-label="Discussions">
       <header class="sidebar-header">
         <a class="brand" href="#" aria-label="SIIZ — Accueil">
-          <span class="brand-mark" aria-hidden="true"></span>
-          <span>SIIZ</span>
+          <img class="siiz-brand-symbol" src="assets/siiz-logo.svg" alt="" aria-hidden="true" />
+          <span class="siiz-brand-word">siiz</span>
         </a>
         <button class="icon-button profile-access-button" id="profileButton" type="button" aria-label="Ouvrir mon profil">
           <span class="profile-access-visual" id="profileButtonVisual" aria-hidden="true">
