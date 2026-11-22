@@ -1147,6 +1147,30 @@ html[data-siiz-mode="demo"] body.siiz-keyboard-open .conversation-list{padding-b
 html[data-siiz-mode="demo"] body.siiz-keyboard-open .floating-new-chat{display:none!important}
 html[data-siiz-mode="demo"] body.siiz-keyboard-open .sidebar{padding-bottom:272px!important}
 html[data-siiz-mode="demo"] body.siiz-keyboard-open .app-shell{overflow:hidden!important}
+
+/* Final embedded phone keyboard adjustments. */
+html[data-siiz-mode="demo"] .scale-labels{bottom:0!important;transform:translateY(5px)!important}
+html[data-siiz-mode="demo"] .scale-drawer{height:74px!important}
+html[data-siiz-mode="demo"] .home-proximity-control,
+html[data-siiz-mode="demo"] .chat-proximity-control{min-height:74px!important}
+html[data-siiz-mode="demo"] body.siiz-keyboard-message .composer{
+ bottom:280px!important;z-index:21!important;pointer-events:auto!important;
+}
+html[data-siiz-mode="demo"] body.siiz-keyboard-message .chat-panel{padding-bottom:280px!important}
+html[data-siiz-mode="demo"] body.siiz-keyboard-message .messages{padding-bottom:90px!important}
+html[data-siiz-mode="demo"] body.siiz-keyboard-message .floating-new-chat{display:none!important}
+html[data-siiz-mode="demo"] .siiz-key{
+ background:#fdfefa!important;color:#1a3034!important;border:1px solid #cdd4cc!important;
+ box-shadow:0 2px 0 #bfc8be!important;border-radius:9px!important;
+ font-family:'Montserrat Alternates',Arial,sans-serif!important;font-weight:650!important;
+ transition:background .08s,transform .08s,box-shadow .08s!important
+}
+html[data-siiz-mode="demo"] .siiz-key-wide{background:#d4dbd3!important}
+html[data-siiz-mode="demo"] .siiz-key-search{background:#ffd335!important;color:#142b30!important}
+html[data-siiz-mode="demo"] .siiz-key.siiz-key-pressed,
+html[data-siiz-mode="demo"] .siiz-key:active{
+ background:#ffd335!important;transform:translateY(2px)!important;box-shadow:0 0 0 2px #e3b80d!important
+}
 </style>
 </head>
 <body>
@@ -2524,37 +2548,65 @@ setProximityEnabled(proximityEnabled);
 resizeInput();
 
 
-/* In-phone keyboard for the public demo; physical keyboard also edits the same search field. */
+/* SIIZ simulated AZERTY: works in search and conversation composer. */
 if(new URLSearchParams(location.search).get("demo")==="1"){
- const kb=document.getElementById("siizDemoKeyboard");
- const keys=document.getElementById("siizKeyboardKeys");
- const field=document.getElementById("searchInput");
- const rows=[["A","Z","E","R","T","Y","U","I","O","P"],["Q","S","D","F","G","H","J","K","L","M"],["⇧","W","X","C","V","B","N","⌫"],["123",",","espace",".","Rechercher"]];
- rows.forEach(row=>{
-  const div=document.createElement("div");div.className="siiz-key-row";
-  row.forEach(letter=>{
-   const btn=document.createElement("button");btn.type="button";btn.className="siiz-key";
-   if(["⇧","⌫","123"].includes(letter))btn.classList.add("siiz-key-wide");
-   if(letter==="espace")btn.classList.add("siiz-key-space");
-   if(letter==="Rechercher")btn.classList.add("siiz-key-search");
-   btn.textContent=letter;btn.addEventListener("pointerdown",e=>e.preventDefault());
-   btn.addEventListener("click",()=>{
-    if(letter==="Rechercher"){closeKeyboard();return}
-    if(letter==="⌫")field.value=field.value.slice(0,-1);
-    else if(letter==="espace")field.value+=" ";
-    else if(letter==="⇧"||letter==="123")return;
-    else field.value+=letter.toLowerCase();
-    field.dispatchEvent(new Event("input",{bubbles:true}));
-    field.focus({preventScroll:true});
-   });div.appendChild(btn);
-  });keys.appendChild(div);
+ const kb=document.getElementById("siizDemoKeyboard"), keys=document.getElementById("siizKeyboardKeys");
+ const search=document.getElementById("searchInput"), message=document.getElementById("messageInput");
+ let active=null, shift=false;
+ const rows=[["A","Z","E","R","T","Y","U","I","O","P"],["Q","S","D","F","G","H","J","K","L","M"],["⇧","W","X","C","V","B","N","⌫"],["123",",","espace",".","Terminé"]];
+ const keyButtons=[];
+ function activateKey(label){
+  const button=keyButtons.find(b=>b.dataset.key.toLowerCase()===label.toLowerCase());
+  if(button){button.classList.add("siiz-key-pressed");setTimeout(()=>button.classList.remove("siiz-key-pressed"),155)}
+ }
+ function insertKey(letter){
+  if(!active)return;
+  if(letter==="Terminé"){closeKeyboard();return}
+  if(letter==="⇧"){shift=!shift;return}
+  if(letter==="123")return;
+  const from=active.selectionStart??active.value.length,to=active.selectionEnd??from;
+  let insert=letter==="espace"?" ":letter;
+  if(letter==="⌫"){if(from===to&&from>0)active.setRangeText("",from-1,to,"end");else active.setRangeText("",from,to,"end")}
+  else active.setRangeText(shift?insert.toUpperCase():insert.toLowerCase(),from,to,"end");
+  active.dispatchEvent(new Event("input",{bubbles:true}));
+  active.focus({preventScroll:true});
+ }
+ rows.forEach(row=>{const div=document.createElement("div");div.className="siiz-key-row";row.forEach(letter=>{
+  const btn=document.createElement("button");btn.type="button";btn.className="siiz-key";btn.dataset.key=letter;
+  if(["⇧","⌫","123"].includes(letter))btn.classList.add("siiz-key-wide");
+  if(letter==="espace")btn.classList.add("siiz-key-space");
+  if(letter==="Terminé")btn.classList.add("siiz-key-search");
+  btn.textContent=letter;btn.addEventListener("pointerdown",e=>e.preventDefault());
+  btn.addEventListener("click",()=>{activateKey(letter);insertKey(letter)});
+  keyButtons.push(btn);div.appendChild(btn);
+ });keys.appendChild(div)});
+ function openKeyboard(field){
+  active=field;kb.hidden=false;document.body.classList.add("siiz-keyboard-open");
+  document.body.classList.toggle("siiz-keyboard-message",field===message);
+  document.body.classList.toggle("siiz-keyboard-search",field===search);
+  window.scrollTo(0,0);
+ }
+ function closeKeyboard(){
+  kb.hidden=true;document.body.classList.remove("siiz-keyboard-open","siiz-keyboard-message","siiz-keyboard-search");
+  const field=active;active=null;field?.blur();
+ }
+ [search,message].forEach(field=>{
+  field.addEventListener("focus",()=>openKeyboard(field));
+  field.addEventListener("keydown",e=>{
+   if(e.key==="Escape"){e.preventDefault();closeKeyboard();return}
+   if(e.key==="Enter"&&field===search){e.preventDefault();closeKeyboard();return}
+   if(e.key==="Enter"&&field===message&&!e.shiftKey){e.preventDefault();document.getElementById("composer").requestSubmit();closeKeyboard();return}
+   if(e.key==="Backspace")activateKey("⌫");
+   else if(e.key===" ")activateKey("espace");
+   else if(e.key.length===1)activateKey(e.key);
+  });
  });
- function openKeyboard(){kb.hidden=false;document.body.classList.add("siiz-keyboard-open");window.scrollTo(0,0)}
- function closeKeyboard(){kb.hidden=true;document.body.classList.remove("siiz-keyboard-open");field.blur()}
- field.addEventListener("focus",openKeyboard);
  document.getElementById("siizKeyboardDone").addEventListener("click",closeKeyboard);
- field.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key==="Escape"){e.preventDefault();closeKeyboard()}});
- document.addEventListener("pointerdown",e=>{if(!kb.hidden&&!kb.contains(e.target)&&!e.target.closest(".search-box"))closeKeyboard()});
+ document.addEventListener("pointerdown",e=>{
+  if(!kb.hidden&&!kb.contains(e.target)&&!e.target.closest(".search-box")&&!e.target.closest(".composer"))closeKeyboard()
+ });
+ document.getElementById("composer").addEventListener("submit",()=>{if(!kb.hidden&&active===message)closeKeyboard()});
+ document.getElementById("backButton").addEventListener("click",()=>{if(!kb.hidden)closeKeyboard()});
 }
 
   </script>
