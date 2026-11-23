@@ -1144,6 +1144,25 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
 .messages .siiz-thread-avatar img{width:100%;height:100%;object-fit:cover}
 .messages .siiz-thread-avatar-placeholder{visibility:hidden}
 .messages .siiz-group-message .message-author{background:transparent;padding:0;margin:0 0 5px;border-radius:0;font-size:12px;font-weight:800;color:#cc5a88}
+
+/* Mode selection lives in the toolbar, not permanently above conversations. */
+.home-proximity-control,.chat-proximity-control{display:none!important}
+.siiz-mode-trigger{color:var(--ink)!important;flex:0 0 auto}
+.siiz-mode-trigger svg{width:21px;height:21px}
+.siiz-mode-trigger.mode-travel{color:#d6a800!important}
+.siiz-mode-popover[hidden],.siiz-mode-slider[hidden]{display:none!important}
+.siiz-mode-popover{position:fixed;top:65px;right:12px;width:min(310px,calc(100vw - 24px));z-index:40;
+ background:#fff;color:#172d32;border:1px solid #e0e3db;border-radius:19px;
+ box-shadow:0 16px 48px #172d3230;padding:17px;font-family:inherit}
+.siiz-mode-heading{font-size:11px;font-weight:850;letter-spacing:.08em;margin-bottom:12px;color:#606a65}
+.siiz-mode-options{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.siiz-mode-options button{border:1px solid #dce1d9;background:#f1f3ef;border-radius:11px;padding:11px 5px;
+ font:700 12px inherit;color:#172d32;cursor:pointer}
+.siiz-mode-options button.selected{background:#ffd335;border-color:#ffd335}
+.siiz-mode-slider{padding-top:17px}
+.siiz-mode-slider label{display:block;font-size:12px;font-weight:700;margin-bottom:12px}
+.siiz-mode-slider input{width:100%;accent-color:#ffd335}
+.siiz-mode-endpoints{display:flex;justify-content:space-between;font-size:11px;color:#5b665f;margin-top:6px}
 </style>
 </head>
 <body>
@@ -1154,6 +1173,7 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
           <img class="siiz-brand-symbol" src="assets/siiz-logo.svg" alt="" aria-hidden="true" />
           <span class="siiz-brand-word">siiz</span>
         </a>
+        <button class="icon-button siiz-mode-trigger" type="button" aria-label="Mode Domicile ou Voyage" aria-expanded="false" title="Mode de communication"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12 21 5l-5 16-4-8-9-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
         <button class="icon-button profile-access-button" id="profileButton" type="button" aria-label="Ouvrir mon profil">
           <span class="profile-access-visual" id="profileButtonVisual" aria-hidden="true">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"/></svg>
@@ -1195,6 +1215,7 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
             <small id="chatStatus">dans votre quartier</small>
           </span>
         </button>
+        <button class="icon-button siiz-mode-trigger" type="button" aria-label="Mode Domicile ou Voyage" aria-expanded="false" title="Mode de communication"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12 21 5l-5 16-4-8-9-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
         <button class="icon-button header-more" id="chatOptionsButton" type="button" aria-label="Options de la discussion">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
         </button>
@@ -1235,7 +1256,12 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
     </button>
   </main>
 
-  <div class="dialog-backdrop" id="dialogBackdrop" hidden>
+  <div class="siiz-mode-popover" id="siizModePopover" hidden role="dialog" aria-label="Mode de communication">
+<div class="siiz-mode-heading">MODE DE COMMUNICATION</div>
+<div class="siiz-mode-options"><button type="button" data-siiz-mode-choice="home" class="selected">⌂ &nbsp; Domicile</button><button type="button" data-siiz-mode-choice="travel">✈ &nbsp; Voyage</button></div>
+<div class="siiz-mode-slider" id="siizTravelScale" hidden><label for="siizTravelRange">Distance et taille des messages</label><input id="siizTravelRange" type="range" min="0" max="1000" step="1" value="685"/><div class="siiz-mode-endpoints"><span>Proche</span><span>Loin</span></div></div>
+</div>
+<div class="dialog-backdrop" id="dialogBackdrop" hidden>
     <section class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"></section>
   </div>
 
@@ -2524,6 +2550,35 @@ renderConversations();
 renderActiveConversation();
 renderProfileButton();
 setProximityEnabled(proximityEnabled);
+
+/* Default to Domicile at every app launch. Travel settings are adjusted in a floating control. */
+const siizModePopover=document.getElementById("siizModePopover");
+const siizTravelScale=document.getElementById("siizTravelScale");
+const siizTravelRange=document.getElementById("siizTravelRange");
+let siizTravelMode=false;
+function siizSetMode(travel){
+ siizTravelMode=Boolean(travel);
+ setProximityEnabled(siizTravelMode);
+ document.querySelectorAll("[data-siiz-mode-choice]").forEach(b=>b.classList.toggle("selected",(b.dataset.siizModeChoice==="travel")===siizTravelMode));
+ document.querySelectorAll(".siiz-mode-trigger").forEach(b=>b.classList.toggle("mode-travel",siizTravelMode));
+ siizTravelScale.hidden=!siizTravelMode;
+}
+function siizCloseMode(){
+ siizModePopover.hidden=true;
+ document.querySelectorAll(".siiz-mode-trigger").forEach(b=>b.setAttribute("aria-expanded","false"));
+}
+document.querySelectorAll(".siiz-mode-trigger").forEach(b=>b.addEventListener("click",e=>{
+ e.stopPropagation();const shouldOpen=siizModePopover.hidden;
+ siizModePopover.hidden=!shouldOpen;
+ document.querySelectorAll(".siiz-mode-trigger").forEach(x=>x.setAttribute("aria-expanded",String(shouldOpen)));
+}));
+document.querySelectorAll("[data-siiz-mode-choice]").forEach(b=>b.addEventListener("click",()=>siizSetMode(b.dataset.siizModeChoice==="travel")));
+siizTravelRange.addEventListener("input",e=>updateComparisonScale(e.target.value));
+document.addEventListener("pointerdown",e=>{if(!siizModePopover.hidden&&!siizModePopover.contains(e.target)&&!e.target.closest(".siiz-mode-trigger"))siizCloseMode()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")siizCloseMode()});
+siizTravelRange.value=comparisonScale;
+siizSetMode(false);
+
 resizeInput();
 
 
