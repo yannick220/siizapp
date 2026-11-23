@@ -1180,6 +1180,15 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
 .siiz-pinned-mode .siiz-mode-slider{padding-top:12px}
 .siiz-pinned-close{position:absolute;top:5px;right:7px;width:25px;height:25px;border:0;border-radius:50%;
  background:#edf0eb;color:#172d32;font-size:19px;cursor:pointer}
+
+/* Pill controls for Mode in the profile and the internal fallback panel. */
+.siiz-mode-options button,.siiz-mode-settings .siiz-mode-options button{
+ border-radius:999px!important;min-height:48px!important;
+ font-size:13px!important;letter-spacing:0!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:7px!important
+}
+.siiz-mode-options button.selected{background:#ffd335!important}
 </style>
 </head>
 <body>
@@ -2620,7 +2629,12 @@ siizPinned?.addEventListener("click",e=>{
  if(choice)siizSetMode(choice.dataset.siizModeChoice==="travel");
 });
 siizPinned?.addEventListener("input",e=>{if(e.target.matches("[data-siiz-travel-range]")){updateComparisonScale(e.target.value);const other=document.querySelector("#siizProfileTravelRange");if(other)other.value=e.target.value;}});
-window.addEventListener("message",e=>{if(e.data?.type==="siiz-toggle-pinned-mode")siizTogglePinnedMode()});
+window.addEventListener("message",e=>{
+ if(e.origin!=="https://yannick220.github.io")return;
+ if(e.data?.type==="siiz-toggle-pinned-mode")siizTogglePinnedMode();
+ if(e.data?.type==="siiz-demo-set-mode")siizSetMode(e.data.travel===true);
+ if(e.data?.type==="siiz-demo-set-scale")updateComparisonScale(e.data.value);
+});
 siizSetMode(false);
 
 resizeInput();
