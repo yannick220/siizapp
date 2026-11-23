@@ -1163,6 +1163,23 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
 .siiz-mode-slider label{display:block;font-size:12px;font-weight:700;margin-bottom:12px}
 .siiz-mode-slider input{width:100%;accent-color:#ffd335}
 .siiz-mode-endpoints{display:flex;justify-content:space-between;font-size:11px;color:#5b665f;margin-top:6px}
+
+/* Profile-based mode control; the three-click presentation shortcut pins it in the lower left. */
+.siiz-mode-popover{display:none!important}
+.siiz-mode-settings{padding:16px 20px 22px}
+.siiz-mode-intro{font-size:13px;line-height:1.55;color:#586661;margin:0 0 18px}
+.siiz-mode-settings .siiz-mode-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.siiz-mode-settings .siiz-mode-slider{padding-top:22px}
+.siiz-pinned-mode[hidden]{display:none!important}
+.siiz-pinned-mode{position:fixed;bottom:12px;left:12px;z-index:55;width:min(260px,calc(100vw - 24px));
+ background:#fff;color:#172d32;border:1px solid #e2e6df;border-radius:16px;
+ box-shadow:0 12px 36px #142d3238;padding:16px 12px 12px;font-family:inherit}
+.siiz-pinned-mode .siiz-mode-settings{padding:0}
+.siiz-pinned-mode .siiz-mode-intro{font-size:11px;margin:0 20px 12px 0}
+.siiz-pinned-mode .siiz-mode-options button{font-size:11px;padding:9px 4px}
+.siiz-pinned-mode .siiz-mode-slider{padding-top:12px}
+.siiz-pinned-close{position:absolute;top:5px;right:7px;width:25px;height:25px;border:0;border-radius:50%;
+ background:#edf0eb;color:#172d32;font-size:19px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1173,7 +1190,6 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
           <img class="siiz-brand-symbol" src="assets/siiz-logo.svg" alt="" aria-hidden="true" />
           <span class="siiz-brand-word">siiz</span>
         </a>
-        <button class="icon-button siiz-mode-trigger" type="button" aria-label="Mode Domicile ou Voyage" aria-expanded="false" title="Mode de communication"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12 21 5l-5 16-4-8-9-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
         <button class="icon-button profile-access-button" id="profileButton" type="button" aria-label="Ouvrir mon profil">
           <span class="profile-access-visual" id="profileButtonVisual" aria-hidden="true">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"/></svg>
@@ -1215,7 +1231,6 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
             <small id="chatStatus">dans votre quartier</small>
           </span>
         </button>
-        <button class="icon-button siiz-mode-trigger" type="button" aria-label="Mode Domicile ou Voyage" aria-expanded="false" title="Mode de communication"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12 21 5l-5 16-4-8-9-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
         <button class="icon-button header-more" id="chatOptionsButton" type="button" aria-label="Options de la discussion">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
         </button>
@@ -1261,6 +1276,7 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
 <div class="siiz-mode-options"><button type="button" data-siiz-mode-choice="home" class="selected">⌂ &nbsp; Domicile</button><button type="button" data-siiz-mode-choice="travel">✈ &nbsp; Voyage</button></div>
 <div class="siiz-mode-slider" id="siizTravelScale" hidden><label for="siizTravelRange">Distance et taille des messages</label><input id="siizTravelRange" type="range" min="0" max="1000" step="1" value="685"/><div class="siiz-mode-endpoints"><span>Proche</span><span>Loin</span></div></div>
 </div>
+<div class="siiz-pinned-mode" id="siizPinnedMode" hidden><button type="button" class="siiz-pinned-close" aria-label="Fermer le réglage flottant">×</button><div class="siiz-pinned-content"></div></div>
 <div class="dialog-backdrop" id="dialogBackdrop" hidden>
     <section class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"></section>
   </div>
@@ -2011,11 +2027,30 @@ function showProfile(direction = "forward") {
     </div>
     <div class="settings-list">
       ${settingsRow("contacts", "Contacts et invitations", "Carnet d’adresses et lien d’invitation")}
+      ${settingsRow("mode", "Mode", siizTravelMode ? "Voyage" : "Domicile")}
       ${settingsRow("privacy", "Confidentialité", proximityEnabled ? "Proximité active" : "Proximité en pause")}
       ${settingsRow("account-data", "Compte et données", "Exporter ou supprimer mon compte")}
       ${settingsRow("security", "Sécurité", "Appareils, blocages et échanges")}
       ${settingsRow("legal", "Informations légales", "Confidentialité, conditions et éditeur")}
     </div>`, direction);
+}
+
+
+function siizModeSettingsMarkup(){
+ return `<div class="siiz-mode-settings">
+ <p class="siiz-mode-intro">Choisissez comment les distances influencent l'affichage des messages.</p>
+ <div class="siiz-mode-options">
+ <button type="button" data-siiz-mode-choice="home" class="${siizTravelMode?"":"selected"}">⌂ &nbsp; Domicile</button>
+ <button type="button" data-siiz-mode-choice="travel" class="${siizTravelMode?"selected":""}">✈ &nbsp; Voyage</button>
+ </div>
+ <div class="siiz-mode-slider" ${siizTravelMode?"":"hidden"}>
+ <label for="siizProfileTravelRange">Échelle des distances</label>
+ <input id="siizProfileTravelRange" data-siiz-travel-range type="range" min="0" max="1000" step="1" value="${comparisonScale}"/>
+ <div class="siiz-mode-endpoints"><span>Domicile</span><span>Vacances</span></div>
+ </div></div>`;
+}
+function showModeSettings(direction="forward"){
+ openDialog(`${dialogHeader("Mode", "profile")}${siizModeSettingsMarkup()}`,direction);
 }
 
 function showContactsHub(direction = "forward") {
@@ -2292,6 +2327,7 @@ function handleDialogAction(action) {
   if (action === "contacts") showContactsHub();
   if (action === "contacts-permission") showContactsPermission();
   if (action === "invite-link") showInviteContact();
+  if (action === "mode") showModeSettings();
   if (action === "privacy") showPrivacySettings();
   if (action === "account-data") showAccountData();
   if (action === "account-data-back") showAccountData("back");
@@ -2426,6 +2462,8 @@ document.querySelector("#chatOptionsButton").addEventListener("click", showConta
 
 dialogBackdrop.addEventListener("click", event => {
   if (event.target === dialogBackdrop || event.target.closest(".close-dialog")) closeDialog();
+  const choice=event.target.closest("[data-siiz-mode-choice]");
+  if(choice){siizSetMode(choice.dataset.siizModeChoice==="travel");showModeSettings("back");siizSyncPinnedMode();return;}
   if (event.target.closest("[data-new-group]")) showGroupCreator();
   const action = event.target.closest("[data-dialog-action]")?.dataset.dialogAction;
   if (action) handleDialogAction(action);
@@ -2452,6 +2490,10 @@ dialogBackdrop.addEventListener("click", event => {
     showBlockedContacts("back");
     showToast("Contact débloqué");
   }
+});
+
+dialogBackdrop.addEventListener("input", event => {
+ if(event.target.matches("[data-siiz-travel-range]")){updateComparisonScale(event.target.value);siizSyncPinnedMode();}
 });
 
 dialogBackdrop.addEventListener("change", event => {
@@ -2552,31 +2594,33 @@ renderProfileButton();
 setProximityEnabled(proximityEnabled);
 
 /* Default to Domicile at every app launch. Travel settings are adjusted in a floating control. */
-const siizModePopover=document.getElementById("siizModePopover");
-const siizTravelScale=document.getElementById("siizTravelScale");
-const siizTravelRange=document.getElementById("siizTravelRange");
+
 let siizTravelMode=false;
+const siizPinned=document.getElementById("siizPinnedMode");
 function siizSetMode(travel){
  siizTravelMode=Boolean(travel);
  setProximityEnabled(siizTravelMode);
  document.querySelectorAll("[data-siiz-mode-choice]").forEach(b=>b.classList.toggle("selected",(b.dataset.siizModeChoice==="travel")===siizTravelMode));
- document.querySelectorAll(".siiz-mode-trigger").forEach(b=>b.classList.toggle("mode-travel",siizTravelMode));
- siizTravelScale.hidden=!siizTravelMode;
+ document.querySelectorAll(".siiz-mode-slider").forEach(el=>el.hidden=!siizTravelMode);
+ siizSyncPinnedMode();
 }
-function siizCloseMode(){
- siizModePopover.hidden=true;
- document.querySelectorAll(".siiz-mode-trigger").forEach(b=>b.setAttribute("aria-expanded","false"));
+function siizSyncPinnedMode(){
+ if(!siizPinned||siizPinned.hidden)return;
+ const content=siizPinned.querySelector(".siiz-pinned-content");
+ content.innerHTML=siizModeSettingsMarkup();
 }
-document.querySelectorAll(".siiz-mode-trigger").forEach(b=>b.addEventListener("click",e=>{
- e.stopPropagation();const shouldOpen=siizModePopover.hidden;
- siizModePopover.hidden=!shouldOpen;
- document.querySelectorAll(".siiz-mode-trigger").forEach(x=>x.setAttribute("aria-expanded",String(shouldOpen)));
-}));
-document.querySelectorAll("[data-siiz-mode-choice]").forEach(b=>b.addEventListener("click",()=>siizSetMode(b.dataset.siizModeChoice==="travel")));
-siizTravelRange.addEventListener("input",e=>updateComparisonScale(e.target.value));
-document.addEventListener("pointerdown",e=>{if(!siizModePopover.hidden&&!siizModePopover.contains(e.target)&&!e.target.closest(".siiz-mode-trigger"))siizCloseMode()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")siizCloseMode()});
-siizTravelRange.value=comparisonScale;
+function siizTogglePinnedMode(){
+ if(!siizPinned)return;
+ siizPinned.hidden=!siizPinned.hidden;
+ if(!siizPinned.hidden)siizSyncPinnedMode();
+}
+siizPinned?.addEventListener("click",e=>{
+ if(e.target.closest(".siiz-pinned-close")){siizPinned.hidden=true;return}
+ const choice=e.target.closest("[data-siiz-mode-choice]");
+ if(choice)siizSetMode(choice.dataset.siizModeChoice==="travel");
+});
+siizPinned?.addEventListener("input",e=>{if(e.target.matches("[data-siiz-travel-range]")){updateComparisonScale(e.target.value);const other=document.querySelector("#siizProfileTravelRange");if(other)other.value=e.target.value;}});
+window.addEventListener("message",e=>{if(e.data?.type==="siiz-toggle-pinned-mode")siizTogglePinnedMode()});
 siizSetMode(false);
 
 resizeInput();
