@@ -1189,6 +1189,19 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
  gap:7px!important
 }
 .siiz-mode-options button.selected{background:#ffd335!important}
+
+/* Clear bright-yellow progression and perfectly circular range thumb. */
+.siiz-mode-settings input[type="range"],.siiz-pinned-mode input[type="range"]{
+ appearance:none;-webkit-appearance:none;height:5px;border-radius:999px;outline:0;
+ background:linear-gradient(to right,#ffd335 0%,#ffd335 var(--siiz-travel-fill,31.5%),#e5e8e2 var(--siiz-travel-fill,31.5%),#e5e8e2 100%)!important
+}
+.siiz-mode-settings input[type="range"]::-webkit-slider-thumb,.siiz-pinned-mode input[type="range"]::-webkit-slider-thumb{
+ appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+ background:#ffd335;border:3px solid #fff;box-shadow:0 1px 6px #172d3240;cursor:grab
+}
+.siiz-mode-settings input[type="range"]::-moz-range-thumb,.siiz-pinned-mode input[type="range"]::-moz-range-thumb{
+ width:15px;height:15px;border-radius:50%;background:#ffd335;border:3px solid #fff
+}
 </style>
 </head>
 <body>
@@ -1753,6 +1766,7 @@ function updateComparisonScale(rawValue) {
   });
   renderConversations();
   renderActiveConversation();
+  if(typeof siizPaintTravelFill==="function")siizPaintTravelFill();
 }
 
 function setProximityEnabled(enabled) {
@@ -2054,7 +2068,7 @@ function siizModeSettingsMarkup(){
  </div>
  <div class="siiz-mode-slider" ${siizTravelMode?"":"hidden"}>
  <label for="siizProfileTravelRange">Échelle des distances</label>
- <input id="siizProfileTravelRange" data-siiz-travel-range type="range" min="0" max="1000" step="1" value="${comparisonScale}"/>
+ <input id="siizProfileTravelRange" data-siiz-travel-range type="range" min="0" max="1000" step="1" value="${1000-comparisonScale}"/>
  <div class="siiz-mode-endpoints"><span>Domicile</span><span>Vacances</span></div>
  </div></div>`;
 }
@@ -2502,7 +2516,7 @@ dialogBackdrop.addEventListener("click", event => {
 });
 
 dialogBackdrop.addEventListener("input", event => {
- if(event.target.matches("[data-siiz-travel-range]")){updateComparisonScale(event.target.value);siizSyncPinnedMode();}
+ if(event.target.matches("[data-siiz-travel-range]")){updateComparisonScale(1000-Number(event.target.value));siizSyncPinnedMode();}
 });
 
 dialogBackdrop.addEventListener("change", event => {
@@ -2606,8 +2620,10 @@ setProximityEnabled(proximityEnabled);
 
 let siizTravelMode=false;
 const siizPinned=document.getElementById("siizPinnedMode");
+function siizPaintTravelFill(){document.documentElement.style.setProperty("--siiz-travel-fill",`${100-comparisonScale/10}%`)}
 function siizSetMode(travel){
  siizTravelMode=Boolean(travel);
+ siizPaintTravelFill();
  setProximityEnabled(siizTravelMode);
  document.querySelectorAll("[data-siiz-mode-choice]").forEach(b=>b.classList.toggle("selected",(b.dataset.siizModeChoice==="travel")===siizTravelMode));
  document.querySelectorAll(".siiz-mode-slider").forEach(el=>el.hidden=!siizTravelMode);
@@ -2628,12 +2644,12 @@ siizPinned?.addEventListener("click",e=>{
  const choice=e.target.closest("[data-siiz-mode-choice]");
  if(choice)siizSetMode(choice.dataset.siizModeChoice==="travel");
 });
-siizPinned?.addEventListener("input",e=>{if(e.target.matches("[data-siiz-travel-range]")){updateComparisonScale(e.target.value);const other=document.querySelector("#siizProfileTravelRange");if(other)other.value=e.target.value;}});
+siizPinned?.addEventListener("input",e=>{if(e.target.matches("[data-siiz-travel-range]")){updateComparisonScale(1000-Number(e.target.value));const other=document.querySelector("#siizProfileTravelRange");if(other)other.value=e.target.value;}});
 window.addEventListener("message",e=>{
  if(e.origin!=="https://yannick220.github.io")return;
  if(e.data?.type==="siiz-toggle-pinned-mode")siizTogglePinnedMode();
  if(e.data?.type==="siiz-demo-set-mode")siizSetMode(e.data.travel===true);
- if(e.data?.type==="siiz-demo-set-scale")updateComparisonScale(e.data.value);
+ if(e.data?.type==="siiz-demo-set-scale")updateComparisonScale(1000-Number(e.data.value));
 });
 siizSetMode(false);
 
