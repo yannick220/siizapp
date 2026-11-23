@@ -91,6 +91,11 @@ const params=new URLSearchParams(location.search);
 if(params.get("embed")==="1") document.documentElement.classList.add("embedded");
 renderNav();select(apps.some(a=>a.id===params.get("app"))?params.get("app"):"siiz");
 
+/* Relay GO TOUR's visible-caption shortcut into the SIIZ phone iframe. */
+window.addEventListener("message",event=>{
+ if(event.origin!=="https://yannick220.github.io"||event.data?.type!=="siiz-toggle-pinned-mode")return;
+ document.querySelector("#preview iframe")?.contentWindow?.postMessage({type:"siiz-toggle-pinned-mode"},"https://yannick220.github.io");
+});
 /* Presentation shortcut: triple-click SIIZ caption to pin its mode controls. */
 (function(){
  const caption=document.querySelector(".app-detail");
