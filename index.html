@@ -1767,6 +1767,7 @@ function updateComparisonScale(rawValue) {
   renderConversations();
   renderActiveConversation();
   if(typeof siizPaintTravelFill==="function")siizPaintTravelFill();
+  if(typeof siizBroadcastMode==="function")siizBroadcastMode();
 }
 
 function setProximityEnabled(enabled) {
@@ -2620,6 +2621,7 @@ setProximityEnabled(proximityEnabled);
 
 let siizTravelMode=false;
 const siizPinned=document.getElementById("siizPinnedMode");
+function siizBroadcastMode(){if(window.parent!==window)window.parent.postMessage({type:"siiz-mode-state",travel:siizTravelMode,value:1000-comparisonScale},"https://yannick220.github.io")}
 function siizPaintTravelFill(){document.documentElement.style.setProperty("--siiz-travel-fill",`${100-comparisonScale/10}%`)}
 function siizSetMode(travel){
  siizTravelMode=Boolean(travel);
@@ -2628,6 +2630,7 @@ function siizSetMode(travel){
  document.querySelectorAll("[data-siiz-mode-choice]").forEach(b=>b.classList.toggle("selected",(b.dataset.siizModeChoice==="travel")===siizTravelMode));
  document.querySelectorAll(".siiz-mode-slider").forEach(el=>el.hidden=!siizTravelMode);
  siizSyncPinnedMode();
+ siizBroadcastMode();
 }
 function siizSyncPinnedMode(){
  if(!siizPinned||siizPinned.hidden)return;
