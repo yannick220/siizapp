@@ -1202,6 +1202,10 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
 .siiz-mode-settings input[type="range"]::-moz-range-thumb,.siiz-pinned-mode input[type="range"]::-moz-range-thumb{
  width:15px;height:15px;border-radius:50%;background:#ffd335;border:3px solid #fff
 }
+
+/* Make the actual selected mode unambiguous. */
+.siiz-mode-settings .siiz-mode-options button:not(.selected){background:#f1f3ef!important;border-color:#dce1d9!important;color:#172d32!important}
+.siiz-mode-settings .siiz-mode-options button.selected{background:#ffd335!important;border-color:#ffd335!important;color:#172d32!important}
 </style>
 </head>
 <body>
@@ -2050,8 +2054,8 @@ function showProfile(direction = "forward") {
       <p>${proximityEnabled ? "Proximité active" : "Proximité en pause"}</p>
     </div>
     <div class="settings-list">
-      ${settingsRow("contacts", "Contacts et invitations", "Carnet d’adresses et lien d’invitation")}
       ${settingsRow("mode", "Mode", siizTravelMode ? "Voyage" : "Domicile")}
+      ${settingsRow("contacts", "Contacts et invitations", "Carnet d’adresses et lien d’invitation")}
       ${settingsRow("privacy", "Confidentialité", proximityEnabled ? "Proximité active" : "Proximité en pause")}
       ${settingsRow("account-data", "Compte et données", "Exporter ou supprimer mon compte")}
       ${settingsRow("security", "Sécurité", "Appareils, blocages et échanges")}
@@ -2064,8 +2068,8 @@ function siizModeSettingsMarkup(){
  return `<div class="siiz-mode-settings">
  <p class="siiz-mode-intro">Choisissez comment les distances influencent l'affichage des messages.</p>
  <div class="siiz-mode-options">
- <button type="button" data-siiz-mode-choice="home" class="${siizTravelMode?"":"selected"}">⌂ &nbsp; Domicile</button>
- <button type="button" data-siiz-mode-choice="travel" class="${siizTravelMode?"selected":""}">✈ &nbsp; Voyage</button>
+ <button type="button" data-siiz-mode-choice="home" aria-pressed="${!siizTravelMode}" class="${siizTravelMode?"":"selected"}">⌂ &nbsp; Domicile</button>
+ <button type="button" data-siiz-mode-choice="travel" aria-pressed="${siizTravelMode}" class="${siizTravelMode?"selected":""}">✈ &nbsp; Voyage</button>
  </div>
  <div class="siiz-mode-slider" ${siizTravelMode?"":"hidden"}>
  <label for="siizProfileTravelRange">Échelle des distances</label>
@@ -2075,6 +2079,7 @@ function siizModeSettingsMarkup(){
 }
 function showModeSettings(direction="forward"){
  openDialog(`${dialogHeader("Mode", "profile")}${siizModeSettingsMarkup()}`,direction);
+ document.querySelectorAll("#dialog [data-siiz-mode-choice]").forEach(b=>{const selected=(b.dataset.siizModeChoice==="travel")===siizTravelMode;b.classList.toggle("selected",selected);b.setAttribute("aria-pressed",String(selected));});
 }
 
 function showContactsHub(direction = "forward") {
@@ -2627,7 +2632,7 @@ function siizSetMode(travel){
  siizTravelMode=Boolean(travel);
  siizPaintTravelFill();
  setProximityEnabled(siizTravelMode);
- document.querySelectorAll("[data-siiz-mode-choice]").forEach(b=>b.classList.toggle("selected",(b.dataset.siizModeChoice==="travel")===siizTravelMode));
+ document.querySelectorAll("[data-siiz-mode-choice]").forEach(b=>{const selected=(b.dataset.siizModeChoice==="travel")===siizTravelMode;b.classList.toggle("selected",selected);b.setAttribute("aria-pressed",String(selected));});
  document.querySelectorAll(".siiz-mode-slider").forEach(el=>el.hidden=!siizTravelMode);
  siizSyncPinnedMode();
  siizBroadcastMode();
