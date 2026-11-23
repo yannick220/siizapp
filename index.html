@@ -1210,6 +1210,7 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
 /* Keep the profile circle yellow on hover and keyboard focus. */
 .profile-access-button:hover,.profile-access-button:focus-visible,.profile-access-button:active{background:#ffd335!important;background-color:#ffd335!important}
 .profile-access-button:hover .profile-access-visual,.profile-access-button:focus-visible .profile-access-visual{background:transparent!important}
+.siiz-mode-options button{display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important}.siiz-mode-icon{display:block;width:23px;height:23px;flex:none}
 </style>
 </head>
 <body>
@@ -1303,7 +1304,7 @@ html[data-siiz-mode="demo"] .brand .siiz-brand-word{font-style:normal!important}
 
   <div class="siiz-mode-popover" id="siizModePopover" hidden role="dialog" aria-label="Mode de communication">
 <div class="siiz-mode-heading">MODE DE COMMUNICATION</div>
-<div class="siiz-mode-options"><button type="button" data-siiz-mode-choice="home" class="selected">⌂ &nbsp; Domicile</button><button type="button" data-siiz-mode-choice="travel">✈ &nbsp; Voyage</button></div>
+<div class="siiz-mode-options"><button type="button" data-siiz-mode-choice="home" class="selected"><svg class="siiz-mode-icon" viewBox="0 -100 120 130" aria-hidden="true"><path d="M30.35-0.58L44.3-0.58L44.3-30.93L75.7-30.93L75.7-0.58L89.65-0.58L89.65-45.03L60-67.28L30.35-45.03L30.35-0.58ZM19,10.77L19-50.73L60-81.53L101-50.73L101,10.77L64.75,10.77L64.75-19.98L55.25-19.98L55.25,10.77L19,10.77ZM60-33.93Z" fill="currentColor"/></svg> Domicile</button><button type="button" data-siiz-mode-choice="travel"><svg class="siiz-mode-icon" viewBox="0 -100 120 130" aria-hidden="true"><path transform="rotate(90 60 -35)" d="M34.15,15.77L34.15,2.02L49.25-8.53L49.25-25.33L9-9.23L9-25.63L49.3-53.78L49.3-75.53Q49.3-79.93 52.45-83.08Q55.6-86.23 60-86.23Q64.4-86.23 67.55-83.08Q70.7-79.93 70.7-75.53L70.7-53.78L111-25.63L111-9.23L70.7-25.33L70.7-8.53L85.8,2.02L85.8,15.77L60,8.07L34.15,15.77Z" fill="currentColor"/></svg> Voyage</button></div>
 <div class="siiz-mode-slider" id="siizTravelScale" hidden><label for="siizTravelRange">Distance et taille des messages</label><input id="siizTravelRange" type="range" min="0" max="1000" step="1" value="685"/><div class="siiz-mode-endpoints"><span>Proche</span><span>Loin</span></div></div>
 </div>
 <div class="siiz-pinned-mode" id="siizPinnedMode" hidden><button type="button" class="siiz-pinned-close" aria-label="Fermer le réglage flottant">×</button><div class="siiz-pinned-content"></div></div>
