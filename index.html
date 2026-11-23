@@ -2619,7 +2619,7 @@ setProximityEnabled(proximityEnabled);
 
 /* Default to Domicile at every app launch. Travel settings are adjusted in a floating control. */
 
-let siizTravelMode=false;
+var siizTravelMode=false;
 const siizPinned=document.getElementById("siizPinnedMode");
 function siizBroadcastMode(){if(window.parent!==window)window.parent.postMessage({type:"siiz-mode-state",travel:siizTravelMode,value:1000-comparisonScale},"https://yannick220.github.io")}
 function siizPaintTravelFill(){document.documentElement.style.setProperty("--siiz-travel-fill",`${100-comparisonScale/10}%`)}
