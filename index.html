@@ -2052,7 +2052,7 @@ function showContactInfo(direction = "forward") {
 }
 
 function showProfile(direction = "forward") {
-  const savedPhoto = localStorage.getItem("siiz-profile-photo");
+  const savedPhoto = localStorage.getItem("siiz-profile-photo") || SIIZ_DEFAULT_PROFILE_PHOTO;
   openDialog(`${dialogHeader("Mon profil")}
     <div class="contact-card profile-card">
       ${avatarMarkup({ initials: "YD", avatar: savedPhoto || "" })}
