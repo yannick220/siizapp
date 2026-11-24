@@ -42,7 +42,7 @@ html.embedded .device::before{display:none!important;content:none!important}
 html.embedded .library,html.embedded .app-detail,html.embedded .stage-top,html.embedded .stage-footer{display:none!important}
 html.embedded .app-ui{height:100%!important;max-height:100%!important;padding:46px 20px 18px!important}
 
-/* SIIZ alone uses the original white canvas; other demos keep their own palette. */
+/* HOLI alone uses the original white canvas; other demos keep their own palette. */
 html.embedded:has(#preview iframe[src*="index.html"]) .preview,
 html.embedded:has(#preview iframe[src*="index.html"]) .display,
 html.embedded:has(#preview iframe[src*="index.html"]) .device,
@@ -55,10 +55,10 @@ html.embedded .preview iframe[src*="index.html"]{background:#fff!important;color
 <header class="intro"><div class="eyebrow">Le laboratoire d'applications</div><h1>À découvrir.<br>À expérimenter.</h1><p>Des idées d'applications touristiques à explorer directement, dans un téléphone.</p></header>
 <label class="search"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><input id="search" type="search" placeholder="Rechercher une application…" aria-label="Rechercher une application"></label>
 <nav id="catalogue" class="catalogue" aria-label="Applications disponibles"></nav><div class="library-foot">GO! STORE · Une sélection de concepts à manipuler.<br>Les maquettes signalées ne sont pas des applications publiées.</div></aside>
-<main class="stage"><div class="stage-top" id="current">01 / 07</div><div class="device-wrap"><div class="device"><div class="display"><div class="preview" id="preview"></div></div></div></div><div class="app-detail"><strong id="selectedTitle">SIIZ</strong><p id="selectedDesc">Le contact, à bonne distance.</p><span class="state" id="selectedState">Application interactive</span></div><div class="stage-footer">Démonstrations <span id="footerName">SIIZ</span></div></main></div>
+<main class="stage"><div class="stage-top" id="current">01 / 07</div><div class="device-wrap"><div class="device"><div class="display"><div class="preview" id="preview"></div></div></div></div><div class="app-detail"><strong id="selectedTitle">HOLI</strong><p id="selectedDesc">La messagerie de vos vacances.</p><span class="state" id="selectedState">Application interactive</span></div><div class="stage-footer">Démonstrations <span id="footerName">HOLI</span></div></main></div>
 <script>
 const apps=[
-{id:"siiz",name:"SIIZ",desc:"Le contact, à bonne distance.",short:"La messagerie qui prend ses distances",type:"Application interactive",bg:"#006c77",fg:"#ffad17",glyph:"⌖"},
+{id:"siiz",name:"HOLI",desc:"La messagerie de vos vacances.",short:"La messagerie de vos vacances",type:"Application interactive",bg:"#006c77",fg:"#ffad17",glyph:"⌖"},
 {id:"nyx",name:"NYX",desc:"Laissez votre trace dans le ciel.",short:"Dessinez une constellation de voyage",type:"Concept interactif",bg:"#172d52",fg:"#e8c58c",glyph:"✦"},
 {id:"post",name:"POST",desc:"Le plaisir de se faire attendre.",short:"Une carte postale qui prend son temps",type:"Concept interactif",bg:"#d96947",fg:"#fff0dc",glyph:"✉"},
 {id:"ekoa",name:"EKOA",desc:"Voyager léger. Pour de vrai.",short:"Votre empreinte, votre forêt",type:"Concept interactif",bg:"#3e8063",fg:"#d5efc2",glyph:"◉"},
@@ -78,7 +78,7 @@ function ekoa(a){return wrap(a,'<h2 class="app-title">Et si votre voyage<br>se v
 function picti(a){return wrap(a,'<h2 class="app-title">La même vue.<br>Une autre époque.</h2><p class="app-sub">Superposez une image d’archive au lieu que vous visitez.</p><div class="demo-section"><div class="site-photo"><div class="history" id="history"></div></div><p class="formline">Faire apparaître le passé</p><input class="range" type="range" id="historyRange" min="0" max="100" value="55"><div class="gridline"><span class="trip-pill">Aujourd’hui</span><span class="trip-pill">Autrefois</span></div><p class="note">Visuel schématique : la véritable géolocalisation et la réalité augmentée ne sont pas activées ici.</p></div>')}
 function nazca(a){return wrap(a,'<h2 class="app-title">Dessinez.<br>Puis partez.</h2><p class="app-sub">Tracez une forme : elle devient l’idée d’un itinéraire.</p><div class="demo-section"><div class="draw" id="draw"><svg id="drawing" viewBox="0 0 300 230" preserveAspectRatio="none"><polyline id="drawline" points="" fill="none" stroke="#5477b1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gridline"><span class="note">Dessinez avec le doigt ou la souris.</span><button class="subcta" id="clearDraw">Effacer</button></div><p class="note">Prototype gestuel : le calcul du parcours réel sur le réseau de routes reste à connecter.</p></div>')}
 function one(a){return wrap(a,'<h2 class="app-title">24 photos.<br>Un seul voyage.</h2><p class="app-sub">Chaque déclenchement compte. Les images restent secrètes jusqu’au développement.</p><div class="demo-section"><div class="camera">◉</div><div class="gridline"><span class="note">Pellicule restante</span><span class="stat" id="frames">24</span></div><p class="note" id="oneStatus">Appuyez pour capturer un souvenir fictif.</p></div><button class="cta" id="shutter">Déclencher</button>')}
-function select(id){const a=apps.find(x=>x.id===id)||apps[0];selected=a.id;document.querySelectorAll(".app-card").forEach(el=>el.setAttribute("aria-selected",String(el.dataset.id===id)));document.getElementById("selectedTitle").textContent=a.name;document.getElementById("selectedDesc").textContent=a.desc;document.getElementById("selectedState").textContent=a.type;document.getElementById("footerName").textContent=a.name;document.getElementById("current").textContent=String(apps.indexOf(a)+1).padStart(2,"0")+" / "+String(apps.length).padStart(2,"0");if(a.id==="siiz"){preview.innerHTML='<iframe title="SIIZ — messagerie en mode démonstration" src="./index.html?demo=1&amp;catalogue=1&amp;light=1&amp;v=20261123-logo-79bb567" loading="eager"></iframe>';return}preview.innerHTML=({nyx,post,ekoa,picti,nazca,one})[a.id](a);activate(a.id)}
+function select(id){const a=apps.find(x=>x.id===id)||apps[0];selected=a.id;document.querySelectorAll(".app-card").forEach(el=>el.setAttribute("aria-selected",String(el.dataset.id===id)));document.getElementById("selectedTitle").textContent=a.name;document.getElementById("selectedDesc").textContent=a.desc;document.getElementById("selectedState").textContent=a.type;document.getElementById("footerName").textContent=a.name;document.getElementById("current").textContent=String(apps.indexOf(a)+1).padStart(2,"0")+" / "+String(apps.length).padStart(2,"0");if(a.id==="siiz"){preview.innerHTML='<iframe title="HOLI — messagerie en mode démonstration" src="./index.html?demo=1&amp;catalogue=1&amp;light=1&amp;v=20261123-logo-79bb567" loading="eager"></iframe>';return}preview.innerHTML=({nyx,post,ekoa,picti,nazca,one})[a.id](a);activate(a.id)}
 function activate(id){
 if(id==="nyx"){starsSelected=[];let sky=document.getElementById("sky");const coords=[[14,21],[31,17],[46,29],[68,14],[81,35],[21,52],[40,56],[59,48],[77,69],[31,82],[60,86],[88,20]];coords.forEach(([x,y],i)=>{const b=document.createElement("button");b.type="button";b.className="star";b.style.left=x+"%";b.style.top=y+"%";b.setAttribute("aria-label","Étoile "+(i+1));b.onclick=()=>{if(starsSelected.includes(i))return;starsSelected.push(i);b.classList.add("selected");const pts=starsSelected.map(v=>coords[v].join(",")).join(" ");document.getElementById("starLines").innerHTML='<polyline points="'+pts+'" fill="none" stroke="#f9d185" stroke-width=".8" stroke-linecap="round"/>';document.getElementById("starStatus").textContent=starsSelected.length+" étoile(s) reliée(s)"};sky.append(b)});document.getElementById("clearStars").onclick=()=>select("nyx")}
 if(id==="post"){const sl=document.getElementById("postRange");sl.oninput=()=>document.getElementById("postDelay").textContent="Livraison dans "+sl.value+" jour"+(sl.value==="1"?"":"s");document.getElementById("postSend").onclick=()=>{let t=document.getElementById("postText").value.trim();document.getElementById("postStatus").textContent=t?"Carte préparée : livraison simulée dans "+sl.value+" jours.":"Écrivez d’abord votre message."}}
@@ -97,18 +97,18 @@ window.addEventListener("message",event=>{
  if(event.source===document.querySelector("#preview iframe")?.contentWindow&&window.parent!==window)
   window.parent.postMessage(event.data,"https://yannick220.github.io");
 });
-/* Relay GO TOUR's visible-caption shortcut into the SIIZ phone iframe. */
+/* Relay GO TOUR's visible-caption shortcut into the HOLI phone iframe. */
 window.addEventListener("message",event=>{
  if(event.origin!=="https://yannick220.github.io"||!["siiz-toggle-pinned-mode","siiz-demo-set-mode","siiz-demo-set-scale"].includes(event.data?.type))return;
  document.querySelector("#preview iframe")?.contentWindow?.postMessage(event.data,"https://yannick220.github.io");
 });
-/* Presentation shortcut: triple-click SIIZ caption to pin its mode controls. */
+/* Presentation shortcut: triple-click HOLI caption to pin its mode controls. */
 (function(){
  const caption=document.querySelector(".app-detail");
  if(!caption)return;
  let taps=0,last=0;
  caption.addEventListener("click",()=>{
-  if(new URLSearchParams(location.search).get("app")!=="siiz" && document.getElementById("selectedTitle")?.textContent!=="SIIZ")return;
+  if(new URLSearchParams(location.search).get("app")!=="siiz" && document.getElementById("selectedTitle")?.textContent!=="HOLI")return;
   const now=Date.now();taps=now-last<750?taps+1:1;last=now;
   if(taps>=3){taps=0;document.querySelector("#preview iframe")?.contentWindow?.postMessage({type:"siiz-toggle-pinned-mode"},"*")}
  });
